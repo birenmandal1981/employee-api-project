@@ -112,34 +112,68 @@
 import requests
 import csv
 
+# def fetch_employee(user_id):
+#     url = f"https://jsonplaceholder.typicode.com/users/{user_id}"
+#     try:
+#         response = requests.get(url)
+#         return response.json()
+#     except Exception:
+#         print(f"Failed to fetch user {user_id}")
+#         return None
+#
+#
+# with open("employees.csv", "w", newline="") as file:
+#     writer = csv.writer(file)
+#
+#     # Write header only once
+#     writer.writerow(["Name", "Email", "Company"])
+#
+#     # Loop from 1 to 5
+#     for user_id in range(1, 6):
+#         employee = fetch_employee(user_id)
+#
+#         if employee:
+#             name = employee["name"]
+#             email = employee["email"]
+#             company = employee["company"]["name"]
+#
+#             writer.writerow([name, email, company])
+#
+# print("All employee data saved successfully!")
+
+
+#  Final Code (Dynamic approche for total employees of the company)
+import requests
+import csv
+
 def fetch_employee(user_id):
     url = f"https://jsonplaceholder.typicode.com/users/{user_id}"
-    try:
-        response = requests.get(url)
-        return response.json()
-    except Exception:
-        print(f"Failed to fetch user {user_id}")
-        return None
+    response = requests.get(url)
+    return response.json()
 
+# Ask user how many employees to fetch
+limit = int(input("Enter number of employees: "))
 
 with open("employees.csv", "w", newline="") as file:
     writer = csv.writer(file)
 
-    # Write header only once
+    # Header
     writer.writerow(["Name", "Email", "Company"])
 
-    # Loop from 1 to 5
-    for user_id in range(1, 6):
-        employee = fetch_employee(user_id)
+    for i in range(1, limit + 1):
+        emp = fetch_employee(i)
+        # Stop if no valid data
+        if not emp or "name" not in emp:
+            print(f"No more users found after {i - 1}. Stopping...")
+            break
+        writer.writerow([
+                emp["name"],
+                emp["email"],
+                emp["company"]["name"]
+        ])
 
-        if employee:
-            name = employee["name"]
-            email = employee["email"]
-            company = employee["company"]["name"]
 
-            writer.writerow([name, email, company])
-
-print("All employee data saved successfully!")
+print("Data saved successfully!")
 
 
 
